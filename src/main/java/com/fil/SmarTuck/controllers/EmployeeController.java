@@ -1,5 +1,8 @@
 package com.fil.SmarTuck.controllers;
 
+import java.sql.Date;
+import java.sql.Time;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,115 +23,159 @@ import com.fil.SmarTuck.services.ItemServiceImplementation;
 import com.fil.SmarTuck.services.OrderServiceImplementation;
 import com.fil.SmarTuck.services.ShopServiceImplementation;
 
-
-@Controller 
+@Controller
 @SessionAttributes("id")
 public class EmployeeController {
 
-	@Autowired  
-    private EmployeeServiceImplementation employeeService; 
+	@Autowired
+	private EmployeeServiceImplementation employeeService;
 	@Autowired
 	private ShopServiceImplementation shopService;
 	@Autowired
 	private OrderServiceImplementation orderService;
 	@Autowired
 	private ItemServiceImplementation itemService;
-	
-	
-	@RequestMapping("/")  
-    public String getHomePage(){  
-        return "index.jsp";
-    }
-	
-	//  
-	
-	@RequestMapping(value="/login",method=RequestMethod.POST)
-	public ModelAndView showData(@RequestParam String id,@RequestParam String password,@RequestParam String select,ModelMap model)
-	{
-		//System.out.println(select);
-		
-		
-		
-		
-		
-		
-		
-		ModelAndView modelAndView = new ModelAndView();
-	// validate employee	
-		if(select.equals("employee")){
-			if(employeeService.validateEmployee(id, password)){
-				List<Shop> shops = shopService.getAllShops();
-				
-				modelAndView.addObject("id", id);
-				
-				modelAndView.addObject("shops",shops);
-				
-		        modelAndView.setViewName("/employee/home.jsp");
 
-		        return modelAndView;
-			}
-			else{
-				model.put("errorMessage", "Invalid User");
-			//	System.out.println("invalid user");
-				modelAndView.setViewName("index.jsp");
-				return modelAndView;
-			}	
-		}
+	@RequestMapping("/")
+	public String getHomePage() {
+		return "index.jsp";
+	}
+
+	//controller for Login validation
+
+	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	public String showData(@RequestParam String id, @RequestParam String password, @RequestParam String select,
+			ModelMap model) {	
+
+//		ModelAndView modelAndView = new ModelAndView();
 		
-		// Validate Shop
-		
-		
-		else {
-			if(shopService.validateShop(id, password)){
+		// validate employee
+		if (select.equals("employee")) {
+			if (employeeService.validateEmployee(id, password)) {
+				List<Shop> shops = shopService.getAllShops();
+
+//				modelAndView.addObject("id", id);
+//
+//				modelAndView.addObject("shops", shops);
+				model.addAttribute("id", id);
+				model.addAttribute("shops", shops);
+//				modelAndView.setViewName("/employee/home.jsp");
+
+//				return modelAndView;
 				
-				List<List<Order>> pendingOrders=orderService.getAllByShopIdAndStatus(id, "pending");
+				return "/employee/home.jsp";
+			} else {
+				model.addAttribute("errorMessage", "Invalid User");				 
+//				modelAndView.setViewName("index.jsp");
+//				return modelAndView;
+				 return "index.jsp";
+			}
+		}
+
+		// Validate Shop
+
+		else {
+			if (shopService.validateShop(id, password)) {
+
+				List<List<Order>> pendingOrders = orderService.getAllByShopIdAndStatus(id, "pending");
 				List<Item> items = shopService.getItemsByShopId(id);
 				for (Item item : items) {
 					System.out.println(item.toString());
 				}
-				
-				//modelAndView.addObject(id);
-				modelAndView.addObject(pendingOrders);
-				modelAndView.addObject("id", id);
-				
-				
-		        modelAndView.setViewName("/shop/home.jsp");
 
-		        return modelAndView;
-			}
-			else{
-				model.put("errorMessage", "Invalid User");
-			//	System.out.println("invalid user");
-				modelAndView.setViewName("index.jsp");
-				return modelAndView;
+//				modelAndView.addObject(pendingOrders);
+//				modelAndView.addObject("id", id);
+				model.addAttribute(pendingOrders);
+				model.addAttribute("id",id);
+				
+//				modelAndView.setViewName("/shop/home.jsp");
+//
+//				return modelAndView;
+				return "/shop/home.jsp";
+			} else {
+				model.addAttribute("errorMessage", "Invalid User");
+				 System.out.println("invalid user");
+//				modelAndView.setViewName("index.jsp");
+//				return modelAndView;
+				 return "index.jsp";
 			}
 		}
+
+	}
+
+	@RequestMapping(value = "/employee/home", method = RequestMethod.GET)			//in case the user wishes to visit the home page again 
+	public String getAllShops(@RequestParam String id, ModelMap model) {
 		
-		
+		List<Shop> shops = shopService.getAllShops();
+		model.addAttribute("id", id);
+		model.addAttribute("shops", shops);
+		return "/employee/home.jsp";
+	}
+
+//	@RequestMapping(value = "/add-employee", method = RequestMethod.POST)		//extra
+//	public void addEmployee(@RequestBody Employee e) {
+//		employeeService.addEmployee(e);
+//	}
+//
+//	@RequestMapping(value = "/delete-employee", method = RequestMethod.POST)	//extra
+//	public void deleteEmployee(@RequestBody Employee e) {
+//		employeeService.deleteEmployee(e);
+//	}
+
+	
+	@RequestMapping(value = "/employee/profile", method = RequestMethod.GET)
+	public String viewProfile(@RequestParam String id, ModelMap model) {
+		Employee emp = employeeService.getEmployeeById(id);
+		model.addAttribute("id", id);
+		model.addAttribute("employee",emp);
+		return "/employee/profile.jsp";
 	}
 	
-	@RequestMapping("/employee/home")  
-    public String getAllShops(){ 
-		
-		
-		
-        return  "home"; 
-    }
+	@RequestMapping(value = "/employee/orderHistory", method = RequestMethod.GET)
+	public String viewOrderHistory(@RequestParam String id, ModelMap model) {
+		List<List<Order>> allOrders = new ArrayList<>();
+		allOrders = orderService.getAllByAId(id);
+		model.addAttribute("id", id);
+		model.addAttribute("orderHistory",allOrders);
+		return "/employee/orderHistory.jsp";
+	}
 	
-    @RequestMapping(value = "/add-employee", method = RequestMethod.POST)  
-    public void addEmployee(@RequestBody Employee e){  
-        employeeService.addEmployee(e);  
-    }
-    
-    @RequestMapping(value = "/delete-employee", method = RequestMethod.POST)  
-    public void deleteEmployee(@RequestBody Employee e){  
-        employeeService.deleteEmployee(e);  
-    }
-    
-//    @RequestMapping(value = "/employee/{aId}", method = RequestMethod.GET)  
-//    public Optional<Employee> getEmployee(@PathVariable String id){  
-//        return employeeService.getEmployeeById(id);  
-//    }  
+	@RequestMapping(value = "/employee/orderSummary", method = RequestMethod.GET)		// needs to be changed
+	public String viewOrderSummary(@RequestParam String id, @RequestParam List<Item> items, ModelMap model) {
+		List<List<Order>> allOrders = new ArrayList<>();
+		allOrders = orderService.getAllByAId(id);
+		model.addAttribute("id", id);
+		model.addAttribute("orderHistory",allOrders);
+		return "/employee/orderHistory.jsp";
+	}
+	
+	@RequestMapping(value = "/employee/orderSummary", method = RequestMethod.GET)		// needs to be changed
+	public String viewOrderConfirmation(@RequestParam String id, @RequestParam List<Order> order, @RequestParam String remarks,ModelMap model) {
+		
+		String qtyCheck = orderService.checkItemQuantity(order);
+		if(!qtyCheck.equals("Following Items are not in sufficient quantity \n")){
+			model.addAttribute("id", id);
+			return "/shop/menu.jsp";
+		}
+		Date orderDate = new Date(System.currentTimeMillis());
+		Time orderTime =  new Time(System.currentTimeMillis());
+		String orderId = orderService.getOrderId(id, orderDate, orderTime);
+		orderService.updateOrderId(order, orderId);
+		orderService.updateOrderTime(order, orderTime);
+		orderService.updateOrderStatus(orderId, "placed");
+		orderService.updateRemarks(order, remarks);
+		model.addAttribute("id", id);
+		model.addAttribute("orderId",orderId);
+		return "/employee/orderSummary.jsp";
+	}
 	
 	
+	@RequestMapping(value = "/employee/orderInformation", method = RequestMethod.GET)		// needs to be changed
+	public String viewOrderSummary(@RequestParam String id, @RequestParam String orderId, ModelMap model) {
+		List<Order> allItems = new ArrayList<>();
+		allItems = orderService.getOrderByOrderId(orderId);
+		model.addAttribute("id", id);
+		model.addAttribute("orderinformation",allItems);
+		return "/employee/orderInformation.jsp";
+	}
 }

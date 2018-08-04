@@ -21,6 +21,7 @@
   <link rel="stylesheet" href="assets/mobile/css/mbr-additional.css" type="text/css">
 </head>
 <body>
+${errorMessage}
 <section class="cid-qZgbGPpATX mbr-fullscreen mbr-parallax-background" id="header15-1">
 
     

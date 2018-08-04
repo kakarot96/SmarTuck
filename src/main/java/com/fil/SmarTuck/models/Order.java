@@ -69,6 +69,24 @@ public class Order {
 	}
 
 
+	public Order(int sNo, String orderId, Employee aId, Item iNo, int qty, int price, Date orderDate, Time orderTime,
+			Time deliveryTime, String status, double rating, String remarks) {
+		super();
+		this.sNo = sNo;
+		this.orderId = orderId;
+		this.aId = aId;
+		this.iNo = iNo;
+		this.qty = qty;
+		this.price = price;
+		this.orderDate = orderDate;
+		this.orderTime = orderTime;
+		this.deliveryTime = deliveryTime;
+		this.status = status;
+		this.rating = rating;
+		this.remarks = remarks;
+	}
+
+
 	public int getsNo() {
 		return sNo;
 	}
@@ -186,6 +204,14 @@ public class Order {
 
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
+	}
+
+
+	@Override
+	public String toString() {
+		return "Order [sNo=" + sNo + ", orderId=" + orderId + ", aId=" + aId + ", iNo=" + iNo + ", qty=" + qty
+				+ ", price=" + price + ", orderDate=" + orderDate + ", orderTime=" + orderTime + ", deliveryTime="
+				+ deliveryTime + ", status=" + status + ", rating=" + rating + ", remarks=" + remarks + "]";
 	}
 	
 
