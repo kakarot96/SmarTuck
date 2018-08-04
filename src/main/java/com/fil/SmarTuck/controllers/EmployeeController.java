@@ -146,10 +146,10 @@ public class EmployeeController {
 		allOrders = orderService.getAllByAId(id);
 		model.addAttribute("id", id);
 		model.addAttribute("orderHistory",allOrders);
-		return "/employee/orderHistory.jsp";
+		return "/employee/orderSummary.jsp";
 	}
 	
-	@RequestMapping(value = "/employee/orderSummary", method = RequestMethod.GET)		// needs to be changed
+	@RequestMapping(value = "/employee/orderConfirmation", method = RequestMethod.GET)		
 	public String viewOrderConfirmation(@RequestParam String id, @RequestParam List<Order> order, @RequestParam String remarks,ModelMap model) {
 		
 		String qtyCheck = orderService.checkItemQuantity(order);
@@ -166,11 +166,11 @@ public class EmployeeController {
 		orderService.updateRemarks(order, remarks);
 		model.addAttribute("id", id);
 		model.addAttribute("orderId",orderId);
-		return "/employee/orderSummary.jsp";
+		return "/employee/orderConfirmation.jsp";
 	}
 	
 	
-	@RequestMapping(value = "/employee/orderInformation", method = RequestMethod.GET)		// needs to be changed
+	@RequestMapping(value = "/employee/orderInformation", method = RequestMethod.GET)		
 	public String viewOrderSummary(@RequestParam String id, @RequestParam String orderId, ModelMap model) {
 		List<Order> allItems = new ArrayList<>();
 		allItems = orderService.getOrderByOrderId(orderId);
