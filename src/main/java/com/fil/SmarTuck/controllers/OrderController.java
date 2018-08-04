@@ -53,7 +53,7 @@ public class OrderController {
 		List<List<Order>> allreportedOrders = new ArrayList<>();
 		allreportedOrders = orderService.getAllByShopIdAndStatus(id, "Reported");
 		model.addAttribute("id", id);
-		model.addAttribute("ReportedtOrders",allreportedOrders);
+		model.addAttribute("ReportedOrders",allreportedOrders);
 		return "/shop/reportedOrders.jsp";
 	}	
 }

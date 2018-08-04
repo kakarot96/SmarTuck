@@ -9,7 +9,7 @@
 </head>
 <body>
 
-		<c:forEach var="innerList" items="${ReportedtOrders}">
+		<c:forEach var="innerList" items="${ReportedOrders}">
 			<ol>
 			<c:forEach var="obj" items="${innerList}">
 				<li>${obj}</li>

@@ -77,15 +77,18 @@ public class EmployeeController {
 		else {
 			if (shopService.validateShop(id, password)) {
 
-				List<List<Order>> pendingOrders = orderService.getAllByShopIdAndStatus(id, "pending");
-				List<Item> items = shopService.getItemsByShopId(id);
-				for (Item item : items) {
-					System.out.println(item.toString());
-				}
+				List<List<Order>> placedOrders = orderService.getAllByShopIdAndStatus(id, "placed");
+				List<List<Order>> confirmedOrders = orderService.getAllByShopIdAndStatus(id, "placed");
+				confirmedOrders.addAll(placedOrders);
+				
+//				List<Item> items = shopService.getItemsByShopId(id);
+//				for (Item item : items) {
+//					System.out.println(item.toString());
+//				}
 
 //				modelAndView.addObject(pendingOrders);
 //				modelAndView.addObject("id", id);
-				model.addAttribute(pendingOrders);
+				model.addAttribute("pendingOrders",confirmedOrders);
 				model.addAttribute("id",id);
 				
 //				modelAndView.setViewName("/shop/home.jsp");
