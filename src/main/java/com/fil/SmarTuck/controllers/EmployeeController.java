@@ -78,7 +78,7 @@ public class EmployeeController {
 			if (shopService.validateShop(id, password)) {
 
 				List<List<Order>> placedOrders = orderService.getAllByShopIdAndStatus(id, "placed");
-				List<List<Order>> confirmedOrders = orderService.getAllByShopIdAndStatus(id, "placed");
+				List<List<Order>> confirmedOrders = orderService.getAllByShopIdAndStatus(id, "confirmed");
 				confirmedOrders.addAll(placedOrders);
 				
 //				List<Item> items = shopService.getItemsByShopId(id);
