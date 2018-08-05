@@ -40,4 +40,6 @@ public interface OrderService {
 	void updateRemarks(List<Order> order, String remarks);
 
 	void updateOrderTime(List<Order> order, Time orderTime);
+	
+	public List<List<Order>> getCurrentOrders(String aId);
 }

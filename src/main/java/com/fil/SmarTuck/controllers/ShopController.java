@@ -9,21 +9,18 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.fil.SmarTuck.models.Item;
 import com.fil.SmarTuck.models.Order;
 import com.fil.SmarTuck.services.ItemServiceImplementation;
 import com.fil.SmarTuck.services.OrderServiceImplementation;
-import com.fil.SmarTuck.services.ShopServiceImplementation;
 
 @Controller
 public class ShopController {
 
 	@Autowired
-	private ShopServiceImplementation shopService;
 	private OrderServiceImplementation orderService;
-
+	@Autowired
 	private ItemServiceImplementation itemService;
 	
 	@RequestMapping(value = "/shop/menu", method = RequestMethod.GET)
@@ -59,7 +56,7 @@ public class ShopController {
     @RequestMapping(value = "/shop/currentOrders", method = RequestMethod.GET)		
 	public String viewCurrentOrders(@RequestParam String id,@RequestParam String shopId ,ModelMap model) {
 		List<List<Order>> allCurrentOrders = new ArrayList<>();
-		allCurrentOrders = orderService.getAllByShopIdAndStatus(id, "In the Kitchen");
+		allCurrentOrders = orderService.getCurrentOrders(id);
 		model.addAttribute("id", shopId);
 		model.addAttribute(id);
 		model.addAttribute("currentOrders",allCurrentOrders);

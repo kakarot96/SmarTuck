@@ -175,10 +175,10 @@ public class OrderServiceImplementation implements OrderService {
 	@Override
 	public String checkItemQuantity(List<Order> order) {
 		// TODO Auto-generated method stub
-		String str="Following Items are not in sufficient quantity \n";
+		String str = "Following Items are not in sufficient quantity \n";
 		for (Order o : order) {
 			if (o.getQty() - o.getiNo().getQuantity() < 0)
-				str+=o.getiNo().getItemName()+"\n";
+				str += o.getiNo().getItemName() + "\n";
 
 		}
 
@@ -220,5 +220,21 @@ public class OrderServiceImplementation implements OrderService {
 		orderRepository.saveAll(order);
 	}
 
+	@Override
+	public List<List<Order>> getCurrentOrders(String id) {
+		// TODO Auto-generated method stub
+		List<List<Order>> allOrders = new ArrayList<>();
+		allOrders = getAllByShopId(id);
+
+		List<List<Order>> currentOrders = new ArrayList<>();
+
+		for (List<Order> order : allOrders) {
+			if (order.get(0).getStatus().equals("In the Kitchen") || order.get(0).getStatus().equals("Prepared")) {
+				currentOrders.add(order);
+			}
+		}
+		return currentOrders;
+
+	}
 
 }

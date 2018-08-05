@@ -29,33 +29,33 @@ public class OrderController {
 	
 	
 	
-	@RequestMapping(value = "/shop/currentOrders", method = RequestMethod.GET)		
-	public String viewCurrentOrders(@RequestParam String id,@RequestParam String shopId ,ModelMap model) {
-		List<List<Order>> allCurrentOrders = new ArrayList<>();
-		allCurrentOrders = orderService.getAllByShopIdAndStatus(id, "In the Kitchen");
-		model.addAttribute("id", shopId);
-		model.addAttribute(id);
-		model.addAttribute("currentOrders",allCurrentOrders);
-		return "/shop/currentOrders.jsp";
-	}	
-	
-	@RequestMapping(value = "/shop/ordersHistory", method = RequestMethod.GET)		
-	public String viewAllOrders(@RequestParam String id, @RequestParam String shopId,ModelMap model) {
-		List<List<Order>> allOrders = new ArrayList<>();
-		allOrders = orderService.getAllByShopId(id);
-		model.addAttribute("id", id);
-		model.addAttribute(shopId);
-		model.addAttribute("allOrders",allOrders);
-		return "/shop/ordersHistory.jsp";
-	}	
-	
-	@RequestMapping(value = "/shop/reportedOrders", method = RequestMethod.GET)		
-	public String viewReportedOrders(@RequestParam String id, @RequestParam String shopId,ModelMap model) {
-		List<List<Order>> allreportedOrders = new ArrayList<>();
-		allreportedOrders = orderService.getAllByShopIdAndStatus(id, "Reported");
-		model.addAttribute(shopId);
-		model.addAttribute("id", id);
-		model.addAttribute("ReportedOrders",allreportedOrders);
-		return "/shop/reportedOrders.jsp";
-	}	
+//	@RequestMapping(value = "/shop/currentOrders", method = RequestMethod.GET)		
+//	public String viewCurrentOrders(@RequestParam String id,@RequestParam String shopId ,ModelMap model) {
+//		List<List<Order>> allCurrentOrders = new ArrayList<>();
+//		allCurrentOrders = orderService.getAllByShopIdAndStatus(id, "In the Kitchen");
+//		model.addAttribute("id", shopId);
+//		model.addAttribute(id);
+//		model.addAttribute("currentOrders",allCurrentOrders);
+//		return "/shop/currentOrders.jsp";
+//	}	
+//	
+//	@RequestMapping(value = "/shop/ordersHistory", method = RequestMethod.GET)		
+//	public String viewAllOrders(@RequestParam String id, @RequestParam String shopId,ModelMap model) {
+//		List<List<Order>> allOrders = new ArrayList<>();
+//		allOrders = orderService.getAllByShopId(id);
+//		model.addAttribute("id", id);
+//		model.addAttribute(shopId);
+//		model.addAttribute("allOrders",allOrders);
+//		return "/shop/ordersHistory.jsp";
+//	}	
+//	
+//	@RequestMapping(value = "/shop/reportedOrders", method = RequestMethod.GET)		
+//	public String viewReportedOrders(@RequestParam String id, @RequestParam String shopId,ModelMap model) {
+//		List<List<Order>> allreportedOrders = new ArrayList<>();
+//		allreportedOrders = orderService.getAllByShopIdAndStatus(id, "Reported");
+//		model.addAttribute(shopId);
+//		model.addAttribute("id", id);
+//		model.addAttribute("ReportedOrders",allreportedOrders);
+//		return "/shop/reportedOrders.jsp";
+//	}	
 }
