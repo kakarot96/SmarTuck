@@ -116,7 +116,7 @@ public class EmployeeController {
 			model.addAttribute("qtyCheck", qtyCheck);
 			return "/employee/menu.jsp";
 		}
-		orderService.addOrder(order);
+		//orderService.addOrder(order);
 		Date orderDate = new Date(System.currentTimeMillis());
 		Time orderTime = new Time(System.currentTimeMillis());
 		String orderId = orderService.getOrderId(id, orderDate, orderTime);

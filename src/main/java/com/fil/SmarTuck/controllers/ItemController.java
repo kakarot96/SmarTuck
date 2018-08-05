@@ -32,45 +32,45 @@ public class ItemController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     
     
-    @RequestMapping(value = "/shop/menu", method = RequestMethod.GET)  
-    public ModelAndView getAllItems(@RequestParam String id,@RequestParam String shopId){  
-    	
-    	logger.debug("Debug message");
-        logger.info("Info message");
-        logger.warn("Warn message");
-        logger.error("Error message");
-    	
-    	
-    	ModelAndView modelAndView=new ModelAndView();
-    	modelAndView.addObject(shopId);
-    	List<List<Item>> items=itemService.getItemByCategory(shopId);
-    	modelAndView.addObject("items",items);
-    	modelAndView.setViewName("/shop/menu.jsp");
-    	return modelAndView;
-        
-    }  
+//    @RequestMapping(value = "/shop/menu", method = RequestMethod.GET)  
+//    public ModelAndView getAllItems(@RequestParam String id,@RequestParam String shopId){  
+//    	
+//    	logger.debug("Debug message");
+//        logger.info("Info message");
+//        logger.warn("Warn message");
+//        logger.error("Error message");
+//    	
+//    	
+//    	ModelAndView modelAndView=new ModelAndView();
+//    	modelAndView.addObject(shopId);
+//    	List<List<Item>> items=itemService.getItemByCategory(shopId);
+//    	modelAndView.addObject("items",items);
+//    	modelAndView.setViewName("/shop/menu.jsp");
+//    	return modelAndView;
+//        
+//    }  
     
-    @RequestMapping(value = "/shop/inventory", method = RequestMethod.GET)  
-    public ModelAndView getInventory(@RequestParam String id,@RequestParam String shopId){  
-    	ModelAndView modelAndView=new ModelAndView();
-    	modelAndView.addObject(shopId);
-    	List<Item> items=itemService.getAllByShopId(id);
-    	modelAndView.addObject("items",items);
-    	modelAndView.setViewName("/shop/inventory.jsp");
-    	return modelAndView;
-        
-    } 
-    
-    @RequestMapping(value = "/shop/update", method = RequestMethod.GET)  
-    public ModelAndView updateItems(@RequestParam String id,@RequestParam String shopId,@RequestParam List<Item> items){  
-    	
-    	itemService.updateItems(items);
-    	ModelAndView modelAndView=new ModelAndView();
-    	modelAndView.addObject(shopId);
-    	modelAndView.setViewName("/shop/inventory.jsp");
-    	return modelAndView;
-        
-    } 
+//    @RequestMapping(value = "/shop/inventory", method = RequestMethod.GET)  
+//    public ModelAndView getInventory(@RequestParam String id,@RequestParam String shopId){  
+//    	ModelAndView modelAndView=new ModelAndView();
+//    	modelAndView.addObject(shopId);
+//    	List<Item> items=itemService.getAllByShopId(id);
+//    	modelAndView.addObject("items",items);
+//    	modelAndView.setViewName("/shop/inventory.jsp");
+//    	return modelAndView;
+//        
+//    } 
+//    
+//    @RequestMapping(value = "/shop/update", method = RequestMethod.GET)  
+//    public ModelAndView updateItems(@RequestParam String id,@RequestParam String shopId,@RequestParam List<Item> items){  
+//    	
+//    	itemService.updateItems(items);
+//    	ModelAndView modelAndView=new ModelAndView();
+//    	modelAndView.addObject(shopId);
+//    	modelAndView.setViewName("/shop/inventory.jsp");
+//    	return modelAndView;
+//        
+//    } 
 
     
 }  
