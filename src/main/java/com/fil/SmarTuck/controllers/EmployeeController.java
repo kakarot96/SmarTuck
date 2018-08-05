@@ -36,149 +36,99 @@ public class EmployeeController {
 	@Autowired
 	private ItemServiceImplementation itemService;
 
-	@RequestMapping("/")
-	public String getHomePage() {
-		return "index.jsp";
-	}
+	@RequestMapping(value = "/employee/menu", method = RequestMethod.GET)
+	public String viewMenu(@RequestParam String id, @RequestParam String shopId, ModelMap model) {
 
-	//controller for Login validation
-
-	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String showData(@RequestParam String id, @RequestParam String password, @RequestParam String select,
-			ModelMap model) {	
-
-//		ModelAndView modelAndView = new ModelAndView();
-		
-		// validate employee
-		if (select.equals("employee")) {
-			if (employeeService.validateEmployee(id, password)) {
-				List<Shop> shops = shopService.getAllShops();
-
-//				modelAndView.addObject("id", id);
-//
-//				modelAndView.addObject("shops", shops);
-				model.addAttribute("id", id);
-				model.addAttribute("shops", shops);
-//				modelAndView.setViewName("/employee/home.jsp");
-
-//				return modelAndView;
-				
-				return "/employee/home.jsp";
-			} else {
-				model.addAttribute("errorMessage", "Invalid User");				 
-//				modelAndView.setViewName("index.jsp");
-//				return modelAndView;
-				 return "index.jsp";
-			}
-		}
-
-		// Validate Shop
-
-		else {
-			if (shopService.validateShop(id, password)) {
-
-				List<List<Order>> placedOrders = orderService.getAllByShopIdAndStatus(id, "placed");
-				List<List<Order>> confirmedOrders = orderService.getAllByShopIdAndStatus(id, "confirmed");
-				confirmedOrders.addAll(placedOrders);
-				
-//				List<Item> items = shopService.getItemsByShopId(id);
-//				for (Item item : items) {
-//					System.out.println(item.toString());
-//				}
-
-//				modelAndView.addObject(pendingOrders);
-//				modelAndView.addObject("id", id);
-				model.addAttribute("pendingOrders",confirmedOrders);
-				model.addAttribute("id",id);
-				
-//				modelAndView.setViewName("/shop/home.jsp");
-//
-//				return modelAndView;
-				return "/shop/home.jsp";
-			} else {
-				model.addAttribute("errorMessage", "Invalid User");
-				 System.out.println("invalid user");
-//				modelAndView.setViewName("index.jsp");
-//				return modelAndView;
-				 return "index.jsp";
-			}
-		}
-
-	}
-
-	@RequestMapping(value = "/employee/home", method = RequestMethod.GET)			//in case the user wishes to visit the home page again 
-	public String getAllShops(@RequestParam String id, ModelMap model) {
-		
-		List<Shop> shops = shopService.getAllShops();
+		List<List<Item>> items = itemService.getItemByCategory(shopId);
 		model.addAttribute("id", id);
-		model.addAttribute("shops", shops);
-		return "/employee/home.jsp";
+		model.addAttribute("shopId", shopId);
+		model.addAttribute("items", items);
+		return "/employee/menu.jsp";
 	}
 
-//	@RequestMapping(value = "/add-employee", method = RequestMethod.POST)		//extra
-//	public void addEmployee(@RequestBody Employee e) {
-//		employeeService.addEmployee(e);
-//	}
-//
-//	@RequestMapping(value = "/delete-employee", method = RequestMethod.POST)	//extra
-//	public void deleteEmployee(@RequestBody Employee e) {
-//		employeeService.deleteEmployee(e);
-//	}
-
-	
 	@RequestMapping(value = "/employee/profile", method = RequestMethod.GET)
 	public String viewProfile(@RequestParam String id, ModelMap model) {
 		Employee emp = employeeService.getEmployeeById(id);
 		model.addAttribute("id", id);
-		model.addAttribute("employee",emp);
+		model.addAttribute("employee", emp);
 		return "/employee/profile.jsp";
 	}
-	
+
 	@RequestMapping(value = "/employee/orderHistory", method = RequestMethod.GET)
 	public String viewOrderHistory(@RequestParam String id, ModelMap model) {
 		List<List<Order>> allOrders = new ArrayList<>();
 		allOrders = orderService.getAllByAId(id);
 		model.addAttribute("id", id);
-		model.addAttribute("orderHistory",allOrders);
+		model.addAttribute("orderHistory", allOrders);
 		return "/employee/orderHistory.jsp";
 	}
-	
-	@RequestMapping(value = "/employee/orderSummary", method = RequestMethod.GET)		// needs to be changed
-	public String viewOrderSummary(@RequestParam String id, @RequestParam List<Item> items, ModelMap model) {
-		List<List<Order>> allOrders = new ArrayList<>();
-		allOrders = orderService.getAllByAId(id);
-		model.addAttribute("id", id);
-		model.addAttribute("orderHistory",allOrders);
-		return "/employee/orderSummary.jsp";
-	}
-	
-	@RequestMapping(value = "/employee/orderConfirmation", method = RequestMethod.GET)		
-	public String viewOrderConfirmation(@RequestParam String id, @RequestParam List<Order> order, @RequestParam String remarks,ModelMap model) {
-		
-		String qtyCheck = orderService.checkItemQuantity(order);
-		if(!qtyCheck.equals("Following Items are not in sufficient quantity \n")){
-			model.addAttribute("id", id);
-			return "/shop/menu.jsp";
-		}
-		Date orderDate = new Date(System.currentTimeMillis());
-		Time orderTime =  new Time(System.currentTimeMillis());
-		String orderId = orderService.getOrderId(id, orderDate, orderTime);
-		orderService.updateOrderId(order, orderId);
-		orderService.updateOrderTime(order, orderTime);
-		orderService.updateOrderStatus(orderId, "placed");
-		orderService.updateRemarks(order, remarks);
-		model.addAttribute("id", id);
-		model.addAttribute("orderId",orderId);
-		return "/employee/orderConfirmation.jsp";
-	}
-	
-	
-	@RequestMapping(value = "/employee/orderInformation", method = RequestMethod.GET)		
+
+	@RequestMapping(value = "/employee/orderInformation", method = RequestMethod.GET) // needs
+	// to
+	// be
+	// changed
 	public String viewOrderSummary(@RequestParam String id, @RequestParam String orderId, ModelMap model) {
 		List<Order> allItems = new ArrayList<>();
 		allItems = orderService.getOrderByOrderId(orderId);
 		model.addAttribute("id", id);
-		model.addAttribute("orderinformation",allItems);
+		model.addAttribute("orderinformation", allItems);
 		return "/employee/orderInformation.jsp";
 	}
+
+	@RequestMapping(value = "/employee/orderSummary", method = RequestMethod.GET) // needs
+																					// to
+																					// be
+																					// changed
+	public String viewOrderSummary(@RequestParam String id, @RequestParam String shopId,
+			@RequestParam List<Order> order, ModelMap model) {
+		// List<Order> orders = new ArrayList<>();
+		// allOrders = orderService.getAllByAId(id);
+		String qtyCheck = orderService.checkItemQuantity(order);
+		if (!qtyCheck.equals("Following Items are not in sufficient quantity \n")) {
+			List<Item> items = itemService.getAllByShopId(shopId);
+			model.addAttribute(items);
+			model.addAttribute("id", id);
+			model.addAttribute("shopId", shopId);
+			model.addAttribute("qtyCheck", qtyCheck);
+			return "/employee/menu";
+
+		}
+
+		else {
+			model.addAttribute("id", id);
+			model.addAttribute("shopId", shopId);
+			model.addAttribute("orderSummary", order);
+			return "/employee/orderSummary.jsp";
+		}
+
+	}
+
+	@RequestMapping(value = "/employee/orderConfirmation", method = RequestMethod.GET)
+	public String viewOrderConfirmation(@RequestParam String id, @RequestParam String shopId,
+			@RequestParam List<Order> order, @RequestParam String remarks, ModelMap model) {
+
+		String qtyCheck = orderService.checkItemQuantity(order);
+		if (!qtyCheck.equals("Following Items are not in sufficient quantity \n")) {
+			List<Item> items = itemService.getAllByShopId(shopId);
+			model.addAttribute(items);
+			model.addAttribute("shopId", shopId);
+			model.addAttribute("id", id);
+			model.addAttribute("qtyCheck", qtyCheck);
+			return "/employee/menu.jsp";
+		}
+		orderService.addOrder(order);
+		Date orderDate = new Date(System.currentTimeMillis());
+		Time orderTime = new Time(System.currentTimeMillis());
+		String orderId = orderService.getOrderId(id, orderDate, orderTime);
+		orderService.updateOrderId(order, orderId);
+		orderService.updateOrderTime(order, orderTime);
+		orderService.updateOrderStatus(orderId, "Placed");
+		orderService.updateRemarks(order, remarks);
+		orderService.updateOrderDate(order, orderDate);
+		model.addAttribute("id", id);
+		model.addAttribute("shopId", shopId);
+		model.addAttribute("orderId", orderId);
+		return "/employee/orderConfirmation.jsp";
+	}
+
 }

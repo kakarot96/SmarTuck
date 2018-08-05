@@ -22,6 +22,8 @@ public class ShopServiceImplementation implements ShopService {
 		List<Shop> shops = new ArrayList<>();
 		shopRepository.findAll().forEach(shop -> shops.add(shop));
 
+		for (Shop s : shops)
+			System.out.println(s);
 		return shops;
 	}
 

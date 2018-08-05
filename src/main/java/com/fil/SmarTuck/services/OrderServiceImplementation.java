@@ -8,7 +8,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fil.SmarTuck.models.EmployeeRepository;
 import com.fil.SmarTuck.models.Order;
 import com.fil.SmarTuck.models.OrderRepository;
 
@@ -17,10 +16,6 @@ public class OrderServiceImplementation implements OrderService {
 
 	@Autowired
 	private OrderRepository orderRepository;
-	@Autowired
-	private EmployeeServiceImplementation employeeService;
-	@Autowired
-	private ItemServiceImplementation itemService;
 
 	List<Order> orderRecords;
 	List<Order> tempOrders;
@@ -111,7 +106,6 @@ public class OrderServiceImplementation implements OrderService {
 		for (int i = 0; i < list.size(); i++) {
 			list.get(i).setRating(ratingList.get(i));
 		}
-		orderRepository.saveAll(list);
 	}
 
 	@Override
@@ -150,43 +144,25 @@ public class OrderServiceImplementation implements OrderService {
 		tempOrders = new ArrayList<>();
 		order = new ArrayList<>();
 
-		// orderRepository.findAllByAId(aId).forEach(o -> orderRecords.add(o));
-		// // lambda
-		// // expression
-		// int size = orderRecords.size();
-		// for (int i = 0; i < size; i++) {
-		//
-		// if (i == orderRecords.size() - 1) {
-		// tempOrders.add(orderRecords.get(i));
-		// order.add(tempOrders);
-		// } else {
-		//
-		// if (orderRecords.get(i).getOrderId().equals(orderRecords.get(i +
-		// 1).getOrderId())) {
-		// tempOrders.add(orderRecords.get(i));
-		// } else {
-		// tempOrders.add(orderRecords.get(i));
-		// order.add(tempOrders);
-		// tempOrders = new ArrayList<>();
-		// }
-		// }
-		// }
-		tempOrders.add(new Order(1, "1", employeeService.getEmployeeById(aId), itemService.getItemById(1), 2, 30,
-				new Date(System.currentTimeMillis()), new Time(System.currentTimeMillis()), new Time(1), "confirmed", 4,
-				"jhcdhbcjsdh"));
-		tempOrders.add(new Order(2, "1", employeeService.getEmployeeById(aId), itemService.getItemById(2), 1, 30,
-				new Date(System.currentTimeMillis()), new Time(System.currentTimeMillis()), new Time(1), "confirmed", 4,
-				"jhcdhbcjsdh"));
-		tempOrders.add(new Order(3, "1", employeeService.getEmployeeById(aId), itemService.getItemById(4), 1, 30,
-				new Date(System.currentTimeMillis()), new Time(System.currentTimeMillis()), new Time(1), "confirmed", 4,
-				"jhcdhbcjsdh"));
-		order.add(tempOrders);
-		tempOrders = new ArrayList<>();
-		tempOrders.add(new Order(4, "2", employeeService.getEmployeeById(aId), itemService.getItemById(2), 1, 30,
-				new Date(System.currentTimeMillis()), new Time(System.currentTimeMillis()), new Time(1), "confirmed", 4,
-				"jhcdhbcjsdh"));
-		order.add(tempOrders);
-		System.out.println(order);
+		orderRepository.findAllByAId(aId).forEach(o -> orderRecords.add(o)); // lambda
+																				// expression
+		int size = orderRecords.size();
+		for (int i = 0; i < size; i++) {
+
+			if (i == orderRecords.size() - 1) {
+				tempOrders.add(orderRecords.get(i));
+				order.add(tempOrders);
+			} else {
+
+				if (orderRecords.get(i).getOrderId().equals(orderRecords.get(i + 1).getOrderId())) {
+					tempOrders.add(orderRecords.get(i));
+				} else {
+					tempOrders.add(orderRecords.get(i));
+					order.add(tempOrders);
+					tempOrders = new ArrayList<>();
+				}
+			}
+		}
 		return order;
 	}
 
@@ -199,12 +175,13 @@ public class OrderServiceImplementation implements OrderService {
 	@Override
 	public String checkItemQuantity(List<Order> order) {
 		// TODO Auto-generated method stub
-		String str = "Following Items are not in sufficient quantity \n";
+		String str="Following Items are not in sufficient quantity \n";
 		for (Order o : order) {
 			if (o.getQty() - o.getiNo().getQuantity() < 0)
-				str += o.getiNo().getItemName() + "\n";
+				str+=o.getiNo().getItemName()+"\n";
 
 		}
+
 		return str;
 	}
 
@@ -234,5 +211,14 @@ public class OrderServiceImplementation implements OrderService {
 		}
 		orderRepository.saveAll(order);
 	}
+
+	public void updateOrderDate(List<Order> order, Date orderDate) {
+		// TODO Auto-generated method stub
+		for (Order order2 : order) {
+			order2.setOrderDate(orderDate);
+		}
+		orderRepository.saveAll(order);
+	}
+
 
 }

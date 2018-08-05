@@ -19,8 +19,6 @@ public interface OrderService {
 	
 	public void updateOrderDeliveryTime(String orderId, Time deliveryTime);
 	
-	public void updateOrderTime(List<Order> order, Time orderTime);
-	
 	public void updateOrderRating(List<Order> list);
 	
 	public void updateOrderRatingUsingList(List<Order> list, ArrayList<Integer> ratingList);
@@ -35,9 +33,11 @@ public interface OrderService {
 	
 	public String getOrderId (String aId, Date orderDate, Time orderTime);
 	
-	public void updateOrderId(List<Order> order,String orderId);
-	
-	public void updateRemarks(List<Order> order,String remarks);
-	
 	public String checkItemQuantity (List<Order> order);
+
+	void updateOrderId(List<Order> order, String orderId);
+
+	void updateRemarks(List<Order> order, String remarks);
+
+	void updateOrderTime(List<Order> order, Time orderTime);
 }
