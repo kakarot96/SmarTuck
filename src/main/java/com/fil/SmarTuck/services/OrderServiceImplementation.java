@@ -5,9 +5,16 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import com.fil.SmarTuck.models.Item;
+import com.fil.SmarTuck.models.ItemRepository;
 import com.fil.SmarTuck.models.Order;
 import com.fil.SmarTuck.models.OrderRepository;
 
@@ -16,6 +23,10 @@ public class OrderServiceImplementation implements OrderService {
 
 	@Autowired
 	private OrderRepository orderRepository;
+	@Autowired
+	private ItemRepository itemRepository;
+	@Autowired
+	private JavaMailSender sender;
 
 	List<Order> orderRecords;
 	List<Order> tempOrders;
@@ -23,18 +34,19 @@ public class OrderServiceImplementation implements OrderService {
 
 	@Override
 	public List<List<Order>> getAllOrders() {
-		orderRecords = new ArrayList<>();
-		tempOrders = new ArrayList<>();
-		order = new ArrayList<>();
+		List<Order> orderRecords = new ArrayList<>();
+		List<Order> tempOrders = new ArrayList<>();
+		List<List<Order>> order = new ArrayList<>();
+		List<List<Order>> reverseList=new ArrayList<>();
+
 		orderRepository.findAll().forEach(o -> orderRecords.add(o)); // lambda
 																		// expression
-
 		int size = orderRecords.size();
 		for (int i = 0; i < size; i++) {
 
-			if (i == orderRecords.size() - 1) {
-				tempOrders = new ArrayList<>();
+			if (i == size - 1) {
 				tempOrders.add(orderRecords.get(i));
+				order.add(tempOrders);
 			} else {
 
 				if (orderRecords.get(i).getOrderId().equals(orderRecords.get(i + 1).getOrderId())) {
@@ -46,19 +58,25 @@ public class OrderServiceImplementation implements OrderService {
 				}
 			}
 		}
-		return order;
+		
+		for(int i=order.size()-1;i>=0;i--)
+		{
+			reverseList.add(order.get(i));
+		}
+		
+		
+		return reverseList;
 	}
 
 	@Override
 	public List<List<Order>> getAllByShopId(String shopId) {
-		// TODO Auto-generated method stub
+
 		List<List<Order>> allOrders = new ArrayList<>();
 		allOrders = getAllOrders();
-
 		List<List<Order>> shopAllOrders = new ArrayList<>();
 
 		for (List<Order> order : allOrders) {
-			if (order.get(0).getiNo().getShop().getShopId() == shopId) {
+			if (order.get(0).getiNo().getShop().getShopId().equals(shopId)) {
 				shopAllOrders.add(order);
 			}
 		}
@@ -67,6 +85,7 @@ public class OrderServiceImplementation implements OrderService {
 
 	@Override
 	public List<Order> getOrderByOrderId(String orderId) {
+
 		return orderRepository.findAllByOrderId(orderId);
 	}
 
@@ -76,33 +95,7 @@ public class OrderServiceImplementation implements OrderService {
 	}
 
 	@Override
-	public void updateOrderStatus(String orderId, String status) {
-		List<Order> list = orderRepository.findAllByOrderId(orderId);
-		for (Order o : list) {
-			o.setStatus(status);
-		}
-		orderRepository.saveAll(list);
-	}
-
-	@Override
-	public void updateOrderDeliveryTime(String orderId, Time deliveryTime) {
-		// TODO Auto-generated method stub
-		List<Order> list = orderRepository.findAllByOrderId(orderId);
-		for (Order o : list) {
-			o.setDeliveryTime(deliveryTime);
-		}
-		orderRepository.saveAll(list);
-	}
-
-	@Override
-	public void updateOrderRating(List<Order> list) {
-		// TODO Auto-generated method stub
-		orderRepository.saveAll(list);
-	}
-
-	@Override
 	public void updateOrderRatingUsingList(List<Order> list, ArrayList<Integer> ratingList) {
-		// TODO Auto-generated method stub
 		for (int i = 0; i < list.size(); i++) {
 			list.get(i).setRating(ratingList.get(i));
 		}
@@ -110,7 +103,6 @@ public class OrderServiceImplementation implements OrderService {
 
 	@Override
 	public List<List<Order>> getAllByShopIdAndStatus(String shopId, String status) {
-		// TODO Auto-generated method stub
 
 		List<List<Order>> allOrders = new ArrayList<>();
 		allOrders = getAllByShopId(shopId);
@@ -128,7 +120,6 @@ public class OrderServiceImplementation implements OrderService {
 
 	@Override
 	public int getAmountByOrderId(String orderId) {
-		// TODO Auto-generated method stub
 		List<Order> allOrders = getOrderByOrderId(orderId);
 		int amount = 0;
 		for (Order o : allOrders) {
@@ -139,55 +130,117 @@ public class OrderServiceImplementation implements OrderService {
 
 	@Override
 	public List<List<Order>> getAllByAId(String aId) {
-		// TODO Auto-generated method stub
-		orderRecords = new ArrayList<>();
-		tempOrders = new ArrayList<>();
-		order = new ArrayList<>();
+		List<List<Order>> allOrders = new ArrayList<>();
+		allOrders = getAllOrders();
+		List<List<Order>> employeeAllOrders = new ArrayList<>();
 
-		orderRepository.findAllByAId(aId).forEach(o -> orderRecords.add(o)); // lambda
-																				// expression
-		int size = orderRecords.size();
-		for (int i = 0; i < size; i++) {
-
-			if (i == orderRecords.size() - 1) {
-				tempOrders.add(orderRecords.get(i));
-				order.add(tempOrders);
-			} else {
-
-				if (orderRecords.get(i).getOrderId().equals(orderRecords.get(i + 1).getOrderId())) {
-					tempOrders.add(orderRecords.get(i));
-				} else {
-					tempOrders.add(orderRecords.get(i));
-					order.add(tempOrders);
-					tempOrders = new ArrayList<>();
-				}
+		for (List<Order> order : allOrders) {
+			if (order.get(0).getaId().getaId().equals(aId)) {
+				employeeAllOrders.add(order);
 			}
 		}
-		return order;
+		return employeeAllOrders;
 	}
 
 	@Override
 	public String getOrderId(String aId, Date orderDate, Time orderTime) {
 		// TODO Auto-generated method stub
-		return aId + orderDate.toString() + orderTime.toString();
+		String[] date = orderDate.toString().split("-");
+		String[] time = orderTime.toString().split(":");
+		return aId + "-" + date[0] + date[1] + date[2] + "-" + time[0] + time[1] + time[2];
 	}
 
 	@Override
-	public String checkItemQuantity(List<Order> order) {
-		// TODO Auto-generated method stub
-		String str = "Following Items are not in sufficient quantity \n";
+	public List<String> checkItemQuantity(List<Order> order) {
+		List<String> unavailableItems = new ArrayList<>();
+
 		for (Order o : order) {
-			if (o.getQty() - o.getiNo().getQuantity() < 0)
-				str += o.getiNo().getItemName() + "\n";
+			if (o.getiNo().getQuantity() - o.getQty() < 0) {
+
+				unavailableItems.add(o.getiNo().getItemName());
+
+			}
 
 		}
+		return unavailableItems;
+	}
 
-		return str;
+	@Override
+	public List<List<Order>> getCurrentOrders(String id) {
+		List<List<Order>> allOrders = new ArrayList<>();
+
+		allOrders = getAllByShopId(id);
+
+		List<List<Order>> currentOrders = new ArrayList<>();
+
+		for (List<Order> order : allOrders) {
+			if (order.get(0).getStatus().equalsIgnoreCase("In The Kitchen")
+					|| order.get(0).getStatus().equalsIgnoreCase("Completed")) {
+				currentOrders.add(order);
+			}
+		}
+		return currentOrders;
+
+	}
+
+	@Override
+	public List<List<Order>> getPendingOrders(String id) {
+		List<List<Order>> allOrders = new ArrayList<>();
+
+		allOrders = getAllByShopId(id);
+
+		List<List<Order>> pendingOrders = new ArrayList<>();
+
+		for (List<Order> order : allOrders) {
+			if (order.get(0).getStatus().equalsIgnoreCase("Pending")
+					|| order.get(0).getStatus().equalsIgnoreCase("Accepted")) {
+				pendingOrders.add(order);
+			}
+		}
+		return pendingOrders;
+
+	}
+
+	@Override
+	public void updateItemQuantity(List<Order> order) { // added 7/8/2018
+
+		Item item = new Item();
+
+		for (Order o : order) {
+			item = o.getiNo();
+			item.setQuantity(item.getQuantity() - o.getQty());
+			//item.setCounter(item.getCounter() + o.getQty());
+			itemRepository.save(item);
+		}
+	}
+
+	@Override
+	public int getAmountByOrder(List<Order> orders) {
+		int amount = 0;
+		for (Order order : orders) {
+			amount += order.getQty() * order.getiNo().getPrice();
+		}
+		return amount;
+	}
+
+	@Override
+	public void updateRemarks(List<Order> order, String remarks) {
+		for (Order order2 : order) {
+			order2.setRemarks(remarks);
+		}
+		orderRepository.saveAll(order);
+	}
+
+	@Override
+	public void updateOrderDate(List<Order> order, Date orderDate) {
+		for (Order order2 : order) {
+			order2.setOrderDate(orderDate);
+		}
+		orderRepository.saveAll(order);
 	}
 
 	@Override
 	public void updateOrderTime(List<Order> order, Time orderTime) {
-		// TODO Auto-generated method stub
 		for (Order order2 : order) {
 			order2.setOrderTime(orderTime);
 		}
@@ -196,7 +249,6 @@ public class OrderServiceImplementation implements OrderService {
 
 	@Override
 	public void updateOrderId(List<Order> order, String orderId) {
-		// TODO Auto-generated method stub
 		for (Order order2 : order) {
 			order2.setOrderId(orderId);
 		}
@@ -204,37 +256,68 @@ public class OrderServiceImplementation implements OrderService {
 	}
 
 	@Override
-	public void updateRemarks(List<Order> order, String remarks) {
-		// TODO Auto-generated method stub
-		for (Order order2 : order) {
-			order2.setRemarks(remarks);
+	public void updateOrderStatus(String orderId, String status) {
+		List<Order> list = orderRepository.findAllByOrderId(orderId);
+		for (Order o : list) {
+			o.setStatus(status);
 		}
-		orderRepository.saveAll(order);
-	}
-
-	public void updateOrderDate(List<Order> order, Date orderDate) {
-		// TODO Auto-generated method stub
-		for (Order order2 : order) {
-			order2.setOrderDate(orderDate);
-		}
-		orderRepository.saveAll(order);
+		orderRepository.saveAll(list);
 	}
 
 	@Override
-	public List<List<Order>> getCurrentOrders(String id) {
-		// TODO Auto-generated method stub
-		List<List<Order>> allOrders = new ArrayList<>();
-		allOrders = getAllByShopId(id);
-
-		List<List<Order>> currentOrders = new ArrayList<>();
-
-		for (List<Order> order : allOrders) {
-			if (order.get(0).getStatus().equals("In the Kitchen") || order.get(0).getStatus().equals("Prepared")) {
-				currentOrders.add(order);
-			}
+	public void updateOrderDeliveryTime(String orderId, Time deliveryTime) {
+		List<Order> list = orderRepository.findAllByOrderId(orderId);
+		for (Order o : list) {
+			o.setDeliveryTime(deliveryTime);
 		}
-		return currentOrders;
-
+		orderRepository.saveAll(list);
 	}
 
+	@Override
+	public void updateOrderRating(List<Order> list) {
+		orderRepository.saveAll(list);
+	}
+
+	@Override
+	public void sendOrderCompletedEmail(String recipientMailId, String orderId, List<Order> orderItems) {
+		// TODO Auto-generated method stub
+		MimeMessage message = sender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+        String orderStatus = orderItems.get(0).getStatus();
+        StringBuilder str = new StringBuilder();
+        for (Order item : orderItems) {
+			str = str.append("\n" + item.getiNo().getItemName());
+		}
+        try {
+            helper.setTo(recipientMailId);
+            if(orderStatus.equals("Completed")){
+            	helper.setText("Greetings!!! \nYour Order with Order Id: " + orderId + " having items:" + str + "\nhas been " + orderStatus + " by the Shop Vendor.\nPlease visit shop to receive your order.");
+            }
+            else if(orderStatus.equals("Reported")){
+            	helper.setText("Your Order with Order Id: " + orderId + " having items:" + str + "\nhas been " + orderStatus + " by the Shop Vendor.\nYou won't be able to order again until you pay for this order.\nVisit the shop to settle these dues to order online again.");
+            }
+            else if(orderStatus.equals("Declined")){
+            	helper.setText("Your Order with Order Id: " + orderId + " having items:" + str + "\nhas been " + orderStatus + " by the Shop Vendor.\n\nSorry for the inconvenience caused.\nYou can reorder this by visiting order by visiting My orders or you can place a new order all again.");
+            }
+            helper.setSubject(orderId);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+        sender.send(message);
+	}
+	@Override
+	public void updateItemQuantityOnCancel(List<Order> order) {
+		// TODO Auto-generated method stub
+		Item item = new Item();
+
+		for (Order o : order) {
+			item = o.getiNo();
+			item.setQuantity(item.getQuantity() + o.getQty());
+			//item.setCounter(item.getCounter() + o.getQty());
+			itemRepository.save(item);
+		}
+	}
+	
+	
+	
 }

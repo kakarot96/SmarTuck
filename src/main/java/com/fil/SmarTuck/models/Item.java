@@ -15,7 +15,7 @@ import javax.persistence.Table;
 public class Item 
 {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+//	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int iNo;
 	
 	@ManyToOne (fetch = FetchType.EAGER)
@@ -37,7 +37,7 @@ public class Item
 	@Column
 	private int preparationTime;
 	
-	@Column
+	@Column(precision = 10, scale = 2)
 	private double rating;
 	
 	@Column
@@ -46,6 +46,21 @@ public class Item
 
 	public Item() {
 		super();
+	}
+
+	
+	public Item(int iNo,Shop shop, String category, String itemName, int price, int quantity, int preparationTime,
+			double rating, int counter) {
+		super();
+		this.iNo = iNo;
+		this.shop = shop;
+		this.category = category;
+		this.itemName = itemName;
+		this.price = price;
+		this.quantity = quantity;
+		this.preparationTime = preparationTime;
+		this.rating = rating;
+		this.counter = counter;
 	}
 
 

@@ -8,6 +8,8 @@ import com.fil.SmarTuck.models.Shop;
 public interface ShopService {
 
 	public List<Shop> getAllShops();
+	
+	public void updateStatusByShopId(String shopId);
 
 	public Shop getShopById(String shopId);
 

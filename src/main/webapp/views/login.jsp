@@ -3,14 +3,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
-
-<meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-  <link rel="shortcut icon" href="assets/images/logo4.png" type="image/x-icon">
-  <meta name="description" content="">
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<link rel="shortcut icon" href="assets/logo.png" type="image/x-icon">
+	<meta name="description" content="Web Page Builder Description">
   <title>Home</title>
   <link rel="stylesheet" href="assets/web/assets/mobile-icons/mobile-icons.css">
   <link rel="stylesheet" href="assets/tether/tether.min.css">
@@ -19,16 +17,13 @@
   <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-reboot.min.css">
   <link rel="stylesheet" href="assets/theme/css/style.css">
   <link rel="stylesheet" href="assets/mobile/css/mbr-additional.css" type="text/css">
-  <script type="text/javascript">
 
-  </script>
 </head>
 <body>
 <section class="cid-qZgbGPpATX mbr-fullscreen mbr-parallax-background" id="header15-1">
 
-    
 
-    <div class="mbr-overlay" style="opacity: 0.5; background-color: rgb(7, 59, 76);"></div>
+    <div class="mbr-overlay" style="opacity: 0.6; background-color: rgb(7, 59, 76);"></div>
 
     <div class="container align-right">
 <div class="row">
@@ -41,17 +36,17 @@
     <div class="form-container">
       
            
-            <form class="mbr-form" action="/employee/home" method="post" data-form-title="Login Form" name="loginform" id="loginform">
+            <form class="mbr-form" action="" method="post" data-form-title="Login Form" name="loginform" id="loginform" >
 
               <!-- <input type="hidden" name="email" data-form-email="true" value="Ipyfcaa+ItCCTtxphCoDrVqdpq62nnTHzglLCquDGq/C4BViwEamCt63oOQsgsn5/dy7KbxR07+LOzW9GSM6l/7uXEdAZAOV2C70Ne2Dgw//vmLP/SYGVh+oKAFhu03U" data-form-field="Email"> -->
                 
             
                 <div data-for="select">
                     <div class="form-group">
-                        <select class="form-control" name="select" id="select" required onchange="checkSelectBox()" style="cursor:pointer;">
+                        <select class="form-control" name="select" id="select" onchange="checkSelectBox()" style="cursor:pointer;">
                             <!-- <option disabled>Login As</option> -->
-                            <option value="">Login As</option>
-                            <option value="employee">Employee</option>
+                            <!-- <option value="">Login As</option> -->
+                            <option value="employee" >Employee</option>
                             <option value="shopkeeper">Shopkeeper</option>
                         </select>
                   </div>
@@ -70,8 +65,8 @@
                 </div>
                 
                 
-                <span class="input-group-btn">
-                    <button href="" id="loginButton" type="submit" class="btn btn-secondary btn-form display-4" onclick="">LOGIN</button>
+                <span class="input-group-btn" >
+                    <button href="" id="loginButton" type="submit" class="btn btn-primary btn-form display-4">LOGIN</button>
                 </span>
             </form>
 
@@ -92,7 +87,7 @@
   <script src="assets/parallax/jarallax.min.js"></script>
   <script src="assets/theme/js/script.js"></script>
   <script src="assets/formoid/formoid.min.js"></script>
-  <script src="assets/validation/validation.js"></script>
+  <script src="assets/validation/validation.js"></script>  
   
   
 </body>

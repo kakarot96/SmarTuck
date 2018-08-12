@@ -38,30 +38,26 @@ public class ItemServiceImplementation implements ItemService{
 		return itemRepository.findById(id).get();
 	}
 	
-	@Override
-	public void addItem(Item item) {
-
-		itemRepository.save(item);
-
-	}
-
-	public void deleteItem(int id) {
-
-		itemRepository.deleteById(id);
-	}
+	
 
 
+	public List<List<Item>> getAvailableItems(String shopId){
 
-
-	public List<Item> getAvailableItems(String shopId){
-
-		List<Item> availableItems =new ArrayList<Item>();
-		List<Item> tempAvailableItems =new ArrayList<Item>();
-		tempAvailableItems=getAllByShopId(shopId);
+		List<List<Item>> tempAvailableItems =new ArrayList<>();
+		tempAvailableItems=getItemByCategory(shopId);
 		
-		for (Item item : tempAvailableItems) {
-			if(item.getQuantity()>0)availableItems.add(item);
+		List<List<Item>>  availableItems=new ArrayList<>();
+		
+		
+		for (List<Item> list : tempAvailableItems) {
+			List<Item> items =new ArrayList<>();
+			for (Item item : list) {
+				if(item.getQuantity()>0)items.add(item);
+			}
+			availableItems.add(items);
+			
 		}
+		
 		return availableItems;
 
 	}
@@ -82,7 +78,7 @@ public class ItemServiceImplementation implements ItemService{
 		}
 	return itemListByCategory;
 }
-
+	
 
 	@Override
 	public List<Item> getAllByShopId(String shopId) {
@@ -93,19 +89,15 @@ public class ItemServiceImplementation implements ItemService{
 		return items; 
 	}
 
-
-	@Override
-	public void updateItems(List<Item> items) {
-		// TODO Auto-generated method stub
-		itemRepository.saveAll(items);
-	}
-
-
 	@Override
 	public List<Item> getAllByShopIdAndCategory(String shopId, String category) {
 		// TODO Auto-generated method stub
 		Shop shop=shopRepository.findByShopId(shopId);
-		List<Item> items= itemRepository.findAllByShopAndCategory(shop, category);
+		List<Item> items=new ArrayList<>();
+		List<Item> tempItems= itemRepository.findAllByShopAndCategory(shop, category);
+		for (Item item : tempItems) {
+			if(item.getQuantity()>=0)items.add(item);
+		}
 		return items;
 		
 		
@@ -114,17 +106,42 @@ public class ItemServiceImplementation implements ItemService{
 
 	@Override
 	public List<String> getAllCategories(String shopId) {
-		// TODO Auto-generated method stub
-		//Shop shop=shopRepository.findByShopId(shopId);
 		List<String> categories=new ArrayList<>();
 		categories= itemRepository.findByCategory();
-//		for (Item item : items) {
-//			categories.add(item.getCategory());
-//		}
-		
-		
 		return categories;
-	}	
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	@Override
+	public void addItem(Item item) {
+
+		itemRepository.save(item);
+
+	}
+
+	public void deleteItem(int id) {
+
+		itemRepository.deleteById(id);
+	}
+
+
+
+
+	@Override
+	public void updateItems(List<Item> items) {
+		// TODO Auto-generated method stub
+		itemRepository.saveAll(items);
+	}
+
+
+		
 }
 
 

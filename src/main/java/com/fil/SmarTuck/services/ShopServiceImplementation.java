@@ -22,8 +22,8 @@ public class ShopServiceImplementation implements ShopService {
 		List<Shop> shops = new ArrayList<>();
 		shopRepository.findAll().forEach(shop -> shops.add(shop));
 
-		for (Shop s : shops)
-			System.out.println(s);
+//		for (Shop s : shops)
+//			System.out.println(s);
 		return shops;
 	}
 
@@ -64,5 +64,16 @@ public class ShopServiceImplementation implements ShopService {
 		shop.setStatus(status);
 		shopRepository.save(shop);
 	}
+
+	@Override
+	public void updateStatusByShopId(String shopId) {
+		// TODO Auto-generated method stub
+		Shop shop=shopRepository.findByShopId(shopId);
+		if(shop.getStatus()==0)shop.setStatus(1);
+		else shop.setStatus(0);
+		shopRepository.save(shop);
+	}
+
+	
 
 }

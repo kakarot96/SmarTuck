@@ -19,46 +19,46 @@ import javax.persistence.Table;
 public class Order {
 
 	@Id  
-	@GeneratedValue(strategy = GenerationType.AUTO)		//for auto increment
+	@GeneratedValue(strategy = GenerationType.AUTO)	//for auto increment
     private int sNo;  
     
-	@Column (length = 100)
+	@Column (name="order_id",length = 100)
 	private String orderId;
 	
 	
 	// write relation
 	//@Column (length = 100)
 	@ManyToOne (fetch = FetchType.EAGER)
-	@JoinColumn (name = "aId")
+	@JoinColumn (name = "a_id")
     private Employee aId; //change type to class
 	
 	
 	//	write relation
 	//@Column (length = 100)
 	@ManyToOne (fetch = FetchType.EAGER)
-	@JoinColumn (name = "iNo")
+	@JoinColumn (name = "i_no")
     private Item iNo;  //change type to class
     
-	@Column
-	private int qty;
+	@Column 
+	private int qty=0;
 	
 	@Column
-	private int price;
+	private int price=0;
 	
-	@Column
+	@Column(name="order_date")
 	private Date orderDate;
 	
-	@Column
+	@Column(name="order_time")
 	private Time orderTime;
 	
-	@Column
+	@Column(name="delivery_time")
 	private Time deliveryTime;
 	
 	@Column (length = 100)
 	private String status;
 	
-	@Column (precision = 1, scale = 2)
-	private double rating;
+	@Column
+	private int rating ;
 	
 	@Column (length = 500)
     private String remarks;
@@ -67,6 +67,46 @@ public class Order {
 	public Order() {
 		super();
 	}
+
+
+	
+
+	
+
+
+
+
+	public Order(Employee aId, Item iNo, int qty) {
+		super();
+		this.aId = aId;
+		this.iNo = iNo;
+		this.qty = qty;
+	}
+
+
+
+
+	
+
+
+
+
+
+
+
+	public Order(Employee aId, Item iNo,String orderId) {
+		super();
+		this.aId = aId;
+		this.iNo = iNo;
+		this.orderId=orderId;
+	}
+
+
+
+
+
+
+
 
 
 	public int getsNo() {
@@ -169,12 +209,12 @@ public class Order {
 	}
 
 
-	public double getRating() {
+	public int getRating() {
 		return rating;
 	}
 
 
-	public void setRating(double rating) {
+	public void setRating(int rating) {
 		this.rating = rating;
 	}
 
@@ -186,6 +226,14 @@ public class Order {
 
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
+	}
+
+
+	@Override
+	public String toString() {
+		return "Order [sNo=" + sNo + ", orderId=" + orderId + ", aId=" + aId + ", iNo=" + iNo + ", qty=" + qty
+				+ ", price=" + price + ", orderDate=" + orderDate + ", orderTime=" + orderTime + ", deliveryTime="
+				+ deliveryTime + ", status=" + status + ", rating=" + rating + ", remarks=" + remarks + "]";
 	}
 	
 

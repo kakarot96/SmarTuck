@@ -17,7 +17,7 @@ public interface ItemService {
 
 	public List<List<Item>> getItemByCategory(String shopId);
 
-	public List<Item> getAvailableItems(String shopId);
+	public List<List<Item>> getAvailableItems(String shopId);
 
 	public void updateItems(List<Item> items);
 	

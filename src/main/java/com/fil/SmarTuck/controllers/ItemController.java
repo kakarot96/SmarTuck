@@ -17,8 +17,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.fil.SmarTuck.models.Employee;
 import com.fil.SmarTuck.models.Item;
 import com.fil.SmarTuck.models.ItemRepository;
+import com.fil.SmarTuck.models.Order;
 import com.fil.SmarTuck.models.Shop;
 import com.fil.SmarTuck.services.ItemService;
+import com.fil.SmarTuck.services.OrderService;
 
 import java.util.ArrayList;
 import java.util.List;  
@@ -28,7 +30,8 @@ import java.util.Optional;
 public class ItemController {  
     @Autowired  
     private ItemService itemService; 
-    
+    @Autowired
+    private OrderService orderService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     
     
@@ -50,16 +53,21 @@ public class ItemController {
 //        
 //    }  
     
-//    @RequestMapping(value = "/shop/inventory", method = RequestMethod.GET)  
-//    public ModelAndView getInventory(@RequestParam String id,@RequestParam String shopId){  
-//    	ModelAndView modelAndView=new ModelAndView();
-//    	modelAndView.addObject(shopId);
-//    	List<Item> items=itemService.getAllByShopId(id);
-//    	modelAndView.addObject("items",items);
-//    	modelAndView.setViewName("/shop/inventory.jsp");
-//    	return modelAndView;
-//        
-//    } 
+    @RequestMapping(value = "/shop/inventory2", method = RequestMethod.GET)  
+    public ModelAndView getInventory(@RequestParam String id){  
+    	ModelAndView modelAndView=new ModelAndView();
+    	modelAndView.addObject("id",id);
+    	List<Order> order=orderService.getOrderByOrderId("Order1");
+    	System.out.println("order by orderid");
+    	System.out.println();
+    	for (Order order2 : order) {
+			System.out.println(order2);
+		}
+    	modelAndView.addObject("items",order);
+    	modelAndView.setViewName("/shop/inventory.jsp");
+    	return modelAndView;
+        
+    } 
 //    
 //    @RequestMapping(value = "/shop/update", method = RequestMethod.GET)  
 //    public ModelAndView updateItems(@RequestParam String id,@RequestParam String shopId,@RequestParam List<Item> items){  
